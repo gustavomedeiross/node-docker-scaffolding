@@ -1,5 +1,10 @@
 import { Router } from 'express';
 
+import multer from 'multer';
+import multerConfig from './config/multer';
+
+const upload = multer(multerConfig);
+
 import SessionController from './app/controllers/SessionController';
 import UserController from './app/controllers/UserController';
 
