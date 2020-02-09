@@ -1,7 +1,9 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import path from 'path';
+import { resolve } from 'path';
+import socketio from 'socket.io';
+import { Server } from 'http';
 
 import 'express-async-errors';
 
@@ -11,6 +13,9 @@ import './database';
 
 class App {
   constructor() {
+    this.app = express();
+    this.server = new Server(this.app);
+
     this.server = express();
 
     this.middlewares();
@@ -18,16 +23,20 @@ class App {
   }
 
   middlewares() {
-    this.server.use(cors());
-    this.server.use(express.json());
-    this.server.use(
+    this.app.use(cors());
+    this.app.use(express.json());
+    this.app.use(
       '/files',
-      express.static(path.resolve(__dirname, '..', 'storage', 'images'))
+      express.static(resolve(__dirname, '..', 'storage', 'images'))
     );
   }
 
   routes() {
-    this.server.use('/', routes);
+    this.app.use('/', routes);
+  }
+
+  socket() {
+    this.io = socketio(this.server);
   }
 }
 
